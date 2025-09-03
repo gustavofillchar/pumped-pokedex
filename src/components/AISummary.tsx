@@ -1,4 +1,6 @@
-import { Sparkles } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { generatePokemonComparison } from '../services/aiService'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type ComparePokemon = {
     id: number
@@ -23,37 +25,42 @@ interface AISummaryProps {
     compareList: ComparePokemon[]
 }
 
-function generateSummary(pokemons: ComparePokemon[]): string {
-    if (pokemons.length === 0) return ""
-
-    if (pokemons.length === 1) {
-        const pokemon = pokemons[0]
-        const totalStats = pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0)
-        return `${pokemon.name} has ${totalStats} total base stats.`
-    }
-
-    const pokemonTotals = pokemons.map(pokemon => ({
-        name: pokemon.name,
-        total: pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0)
-    }))
-
-    const strongest = pokemonTotals.reduce((max, current) =>
-        current.total > max.total ? current : max
-    )
-
-    return `${strongest.name} has the highest total stats (${strongest.total}).`
-}
-
 export default function AISummary({ compareList }: AISummaryProps) {
+    const [summary, setSummary] = useState<string>('')
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        if (compareList.length === 0) {
+            setSummary('')
+            return
+        }
+
+        const generateSummary = async () => {
+            setIsLoading(true)
+            try {
+                const result = await generatePokemonComparison(compareList)
+                setSummary(result)
+            } catch (error) {
+                console.error('Error generating summary:', error)
+                setSummary('Error generating comparison.')
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        generateSummary()
+    }, [compareList])
+
     if (compareList.length === 0) return null
 
-    const summary = generateSummary(compareList)
-
     return (
-        <div className="bg-gray-50 border rounded-lg p-4">
+        <div>
             <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-gray-500" />
-                <p className="text-sm text-gray-600">{summary}</p>
+                {isLoading ? (
+                    <Skeleton className="h-4 w-full" />
+                ) : (
+                    <p className="text-sm text-gray-600">{summary}</p>
+                )}
             </div>
         </div>
     )
