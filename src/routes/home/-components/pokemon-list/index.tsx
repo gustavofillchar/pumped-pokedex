@@ -70,7 +70,7 @@ export default function PokemonList({ data: pokemons, loading }: { data: { resul
                 <Button
                     size="sm"
                     variant={inCompare ? "destructive" : "outline"}
-                    className={`absolute top-2 right-2 transition-opacity p-1 h-8 w-8 ${inCompare
+                    className={`absolute top-2 right-2 transition-opacity p-1 h-6 w-6 ${inCompare
                         ? 'opacity-100'
                         : compareList.length > 0
                             ? 'opacity-100' + (!canAdd ? ' opacity-50 cursor-not-allowed' : '')

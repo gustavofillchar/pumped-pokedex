@@ -20,8 +20,6 @@ export const Route = createFileRoute('/home/')({
     }),
 })
 
-
-
 function RouteComponent() {
     const { searchInput, setSearchInput, debouncedSearch, currentPage, handlePageChange } = usePokemonSearchParams()
     const limit = 20

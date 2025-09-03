@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
-import { Plus, Check } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { usePokemonDetail, usePokemonSpecies, useEvolutionChain } from '@/hooks/usePokemonDetail'
 import { useCompare } from '@/contexts/CompareContext'
 import PokemonTypes from './-components/pokemon-types'
@@ -34,7 +34,7 @@ export const Route = createFileRoute('/p/$name')({
 
 function RouteComponent() {
     const { name } = Route.useParams()
-    const { addToCompare, isInCompare, compareList } = useCompare()
+    const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare()
 
     const { data: pokemon, isLoading: pokemonLoading } = usePokemonDetail(name)
     const { data: species } = usePokemonSpecies(name)
@@ -101,25 +101,28 @@ function RouteComponent() {
                 </div>
 
                 <Button
-                    variant={isInCompare(pokemonData.id) ? "default" : "outline"}
-                    className={isInCompare(pokemonData.id) ? 'bg-green-500 hover:bg-green-600' : ''}
+                    variant={isInCompare(pokemonData.id) ? "destructive" : "outline"}
                     onClick={() => {
-                        if (compareList.length >= 3 && !isInCompare(pokemonData.id)) return
-                        addToCompare({
-                            id: pokemonData.id,
-                            name: pokemonData.name,
-                            sprites: { front_default: pokemonData.sprites.front_default },
-                            stats: pokemonData.stats,
-                            types: pokemonData.types
-                        })
+                        if (isInCompare(pokemonData.id)) {
+                            removeFromCompare(pokemonData.id)
+                        } else {
+                            if (compareList.length >= 3) return
+                            addToCompare({
+                                id: pokemonData.id,
+                                name: pokemonData.name,
+                                sprites: { front_default: pokemonData.sprites.front_default },
+                                stats: pokemonData.stats,
+                                types: pokemonData.types
+                            })
+                        }
                     }}
-                    disabled={compareList.length >= 3 && !isInCompare(pokemonData.id)}
-                    aria-label={isInCompare(pokemonData.id) ? `${pokemonData.name} added to compare` : `Add ${pokemonData.name} to compare`}
+                    disabled={!isInCompare(pokemonData.id) && compareList.length >= 3}
+                    aria-label={isInCompare(pokemonData.id) ? `Remove ${pokemonData.name} from compare` : `Add ${pokemonData.name} to compare`}
                 >
                     {isInCompare(pokemonData.id) ? (
                         <>
-                            <Check className="w-4 h-4 mr-2" />
-                            Added to Compare
+                            <X className="w-4 h-4 mr-2" />
+                            Remove from Compare
                         </>
                     ) : (
                         <>
