@@ -6,6 +6,7 @@ import PokemonStats from './-components/pokemon-stats'
 import PokemonSprites from './-components/pokemon-sprites'
 import EvolutionChain from './-components/evolution-chain'
 import PokemonMoves from './-components/pokemon-moves'
+import PokemonDetailLoading from './-components/pokemon-detail-loading'
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -38,11 +39,7 @@ function RouteComponent() {
     const { data: evolutionChain } = useEvolutionChain(evolutionChainId ? parseInt(evolutionChainId) : undefined)
 
     if (pokemonLoading) {
-        return (
-            <div className="container mx-auto px-4 py-6">
-                <div className="text-center">Loading...</div>
-            </div>
-        )
+        return <PokemonDetailLoading />
     }
 
     if (!pokemon) {
