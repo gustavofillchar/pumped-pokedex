@@ -7,13 +7,23 @@ export default function PokemonList({ data: pokemons, loading }: { data: { resul
         const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
 
         return (
-            <Link to="/p/$name" params={{ name }}>
-                <div className="aspect-square rounded-lg border border-gray-100 p-4 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer flex flex-col items-center justify-center gap-2">
+            <Link 
+                to="/p/$name" 
+                params={{ name }}
+                className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+            >
+                <div 
+                    className="aspect-square rounded-lg border border-gray-100 p-4 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer flex flex-col items-center justify-center gap-2"
+                    role="button"
+                    tabIndex={0}
+                >
                     <img
                         src={spriteUrl}
-                        alt={name}
+                        alt={`${name} sprite`}
                         className="w-16 h-16 object-contain"
                         loading="lazy"
+                        width={64}
+                        height={64}
                     />
                     <span className="text-xs font-medium text-gray-700 capitalize text-center">{name}</span>
                 </div>

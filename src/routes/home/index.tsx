@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import PokemonPagination from './-components/pagination'
 import PokemonList from './-components/pokemon-list'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { usePokemons } from '@/hooks/usePokemons'
 import { usePokemonSearchParams } from '@/hooks/usePokemonSearch'
 
@@ -55,16 +56,23 @@ function RouteComponent() {
     return (
         <div className="container mx-auto px-4 py-6">
             <div className="mb-6">
+                <Label htmlFor="pokemon-search" className="sr-only">
+                    Search Pokémon by name
+                </Label>
                 <Input
+                    id="pokemon-search"
                     type="text"
                     placeholder="Search Pokémon..."
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     className="max-w-md"
                     disabled={isFetching}
+                    aria-describedby={isFetching ? "search-status" : undefined}
                 />
                 {isFetching && !isLoading && (
-                    <div className="text-sm text-gray-500 mt-2">Searching...</div>
+                    <div id="search-status" className="text-sm text-gray-500 mt-2" role="status" aria-live="polite">
+                        Searching...
+                    </div>
                 )}
             </div>
 

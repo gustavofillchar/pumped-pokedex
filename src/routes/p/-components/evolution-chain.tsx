@@ -18,12 +18,17 @@ function PokemonCard({ pokemon }: { pokemon: EvolutionStage }) {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesId}.png`
 
     return (
-        <Link to="/p/$name" params={{ name: pokemon.species.name }}>
+        <Link 
+            to="/p/$name" 
+            params={{ name: pokemon.species.name }}
+            className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg p-1"
+            aria-label={`View ${pokemon.species.name} details`}
+        >
             <div className="flex flex-col items-center hover:opacity-75 transition-opacity cursor-pointer">
                 <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
                     <img
                         src={spriteUrl}
-                        alt={pokemon.species.name}
+                        alt={`${pokemon.species.name} sprite`}
                         className="w-16 h-16 object-contain"
                         width={64}
                         height={64}

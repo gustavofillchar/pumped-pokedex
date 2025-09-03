@@ -166,20 +166,29 @@ export default function PokemonMoves({ moves }: PokemonMovesProps) {
             <div className="space-y-3">
                 <h3 className="text-lg font-semibold">Moves</h3>
                 <div className="border rounded-lg">
-                    <Table>
+                    <Table role="table" aria-label="Pokemon moves">
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Move</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead>Level</TableHead>
+                                <TableHead scope="col">Move</TableHead>
+                                <TableHead scope="col">Method</TableHead>
+                                <TableHead scope="col">Level</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {processedMoves.map((move) => (
                                 <TableRow
                                     key={move.name}
-                                    className="cursor-pointer hover:bg-gray-50"
+                                    className="cursor-pointer hover:bg-gray-50 focus:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                                     onClick={() => setSelectedMove(move.name)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault()
+                                            setSelectedMove(move.name)
+                                        }
+                                    }}
+                                    tabIndex={0}
+                                    role="button"
+                                    aria-label={`View details for ${move.name.replace('-', ' ')} move`}
                                 >
                                     <TableCell className="font-medium capitalize">
                                         {move.name.replace('-', ' ')}
@@ -199,7 +208,11 @@ export default function PokemonMoves({ moves }: PokemonMovesProps) {
                 </div>
             </div>
 
-            <Sheet open={!!selectedMove} onOpenChange={() => setSelectedMove(null)}>
+            <Sheet 
+                open={!!selectedMove} 
+                onOpenChange={() => setSelectedMove(null)}
+                aria-describedby={selectedMove ? `move-${selectedMove}-details` : undefined}
+            >
                 <MoveDetails
                     moveName={selectedMove || ''}
                 />
