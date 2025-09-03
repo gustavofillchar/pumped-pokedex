@@ -29,6 +29,6 @@ export const useMoveDetail = (name: string) => {
     return useQuery({
         queryKey: ['move-detail', name],
         queryFn: () => pokemonService.getMoveDetails(name),
-        enabled: !!name,
+        enabled: !!name && name.length > 0,
     })
 }
