@@ -1,16 +1,16 @@
-import { X, Trash2 } from 'lucide-react'
+import { X, Trash2, Brain } from 'lucide-react'
+import { useState } from 'react'
 import { useCompare } from '@/contexts/CompareContext'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
-    DrawerFooter,
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer'
+import AISummary from '@/components/AISummary'
 
 const typeColors: Record<string, string> = {
     normal: 'bg-gray-400',
@@ -44,6 +44,7 @@ const statNames: Record<string, string> = {
 
 export default function CompareDrawer() {
     const { compareList, removeFromCompare, clearCompare, isDrawerOpen, setIsDrawerOpen } = useCompare()
+    const [showAISummary, setShowAISummary] = useState(false)
 
     if (compareList.length === 0) return null
 
@@ -69,22 +70,37 @@ export default function CompareDrawer() {
     return (
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerContent className="max-h-[90vh] flex flex-col">
-                <div className="mx-auto w-full max-w-6xl">
+                <div className="mx-auto w-full max-w-6xl flex flex-col flex-1 min-h-0">
                     <DrawerHeader className="flex-shrink-0">
                         <DrawerTitle className="flex items-center justify-between">
                             <span>Compare Pokémon ({compareList.length}/3)</span>
-                            <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={clearCompare}
-                            >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                Remove All
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowAISummary(!showAISummary)}
+                                >
+                                    <Brain className="w-4 h-4 mr-1" />
+                                    {showAISummary ? 'Hide' : 'Generate'} AI Analysis
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={clearCompare}
+                                >
+                                    <Trash2 className="w-4 h-4 mr-1" />
+                                    Remove All
+                                </Button>
+                            </div>
                         </DrawerTitle>
                     </DrawerHeader>
 
-                    <div className="flex-1 overflow-auto px-4 pb-4">
+                    <div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
+                        {showAISummary && (
+                            <div className="mb-4">
+                                <AISummary compareList={compareList} />
+                            </div>
+                        )}
                         <div className="grid gap-2 md:gap-6 grid-cols-3">
                             {slotsToShow.map((pokemon, index) => {
                                 const isHighestTotal = pokemon && pokemon.id === highestTotalPokemonId && compareList.length > 1
@@ -159,12 +175,6 @@ export default function CompareDrawer() {
                             })}
                         </div>
                     </div>
-
-                    <DrawerFooter className="flex-shrink-0">
-                        <DrawerClose asChild>
-                            <Button variant="outline" className="mx-auto max-w-xs">Close</Button>
-                        </DrawerClose>
-                    </DrawerFooter>
                 </div>
             </DrawerContent>
         </Drawer>
