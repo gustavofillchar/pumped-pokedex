@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router'
+
 type EvolutionStage = {
     species: {
         name: string
@@ -16,19 +18,21 @@ function PokemonCard({ pokemon }: { pokemon: EvolutionStage }) {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesId}.png`
 
     return (
-        <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
-                <img
-                    src={spriteUrl}
-                    alt={pokemon.species.name}
-                    className="w-16 h-16 object-contain"
-                    width={64}
-                    height={64}
-                    loading="lazy"
-                />
+        <Link to="/p/$name" params={{ name: pokemon.species.name }}>
+            <div className="flex flex-col items-center hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer">
+                <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
+                    <img
+                        src={spriteUrl}
+                        alt={pokemon.species.name}
+                        className="w-16 h-16 object-contain"
+                        width={64}
+                        height={64}
+                        loading="lazy"
+                    />
+                </div>
+                <span className="text-sm font-medium capitalize">{pokemon.species.name}</span>
             </div>
-            <span className="text-sm font-medium capitalize">{pokemon.species.name}</span>
-        </div>
+        </Link>
     )
 }
 
