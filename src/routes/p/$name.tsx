@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
+import { Plus, Check } from 'lucide-react'
 import { usePokemonDetail, usePokemonSpecies, useEvolutionChain } from '@/hooks/usePokemonDetail'
+import { useCompare } from '@/contexts/CompareContext'
 import PokemonTypes from './-components/pokemon-types'
 import PokemonStats from './-components/pokemon-stats'
 import PokemonSprites from './-components/pokemon-sprites'
@@ -16,6 +18,7 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 type EvolutionStage = {
     species: {
@@ -31,6 +34,7 @@ export const Route = createFileRoute('/p/$name')({
 
 function RouteComponent() {
     const { name } = Route.useParams()
+    const { addToCompare, isInCompare, compareList } = useCompare()
 
     const { data: pokemon, isLoading: pokemonLoading } = usePokemonDetail(name)
     const { data: species } = usePokemonSpecies(name)
@@ -90,9 +94,40 @@ function RouteComponent() {
                 </Breadcrumb>
             </div>
 
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold capitalize mb-2">{pokemonData.name}</h1>
-                <p className="text-gray-600">#{pokemonData.id.toString().padStart(3, '0')}</p>
+            <div className="mb-8 flex items-start justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold capitalize mb-2">{pokemonData.name}</h1>
+                    <p className="text-gray-600">#{pokemonData.id.toString().padStart(3, '0')}</p>
+                </div>
+
+                <Button
+                    variant={isInCompare(pokemonData.id) ? "default" : "outline"}
+                    className={isInCompare(pokemonData.id) ? 'bg-green-500 hover:bg-green-600' : ''}
+                    onClick={() => {
+                        if (compareList.length >= 3 && !isInCompare(pokemonData.id)) return
+                        addToCompare({
+                            id: pokemonData.id,
+                            name: pokemonData.name,
+                            sprites: { front_default: pokemonData.sprites.front_default },
+                            stats: pokemonData.stats,
+                            types: pokemonData.types
+                        })
+                    }}
+                    disabled={compareList.length >= 3 && !isInCompare(pokemonData.id)}
+                    aria-label={isInCompare(pokemonData.id) ? `${pokemonData.name} added to compare` : `Add ${pokemonData.name} to compare`}
+                >
+                    {isInCompare(pokemonData.id) ? (
+                        <>
+                            <Check className="w-4 h-4 mr-2" />
+                            Added to Compare
+                        </>
+                    ) : (
+                        <>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add to Compare
+                        </>
+                    )}
+                </Button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
