@@ -19,7 +19,7 @@ function PokemonCard({ pokemon }: { pokemon: EvolutionStage }) {
 
     return (
         <Link to="/p/$name" params={{ name: pokemon.species.name }}>
-            <div className="flex flex-col items-center hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer">
+            <div className="flex flex-col items-center hover:opacity-75 transition-opacity cursor-pointer">
                 <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
                     <img
                         src={spriteUrl}
@@ -50,7 +50,7 @@ export default function EvolutionChain({ chain }: EvolutionChainProps) {
     return (
         <div className="space-y-3">
             <h3 className="text-lg font-semibold">Evolution Chain</h3>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-start gap-4">
                 {evolutions.map((evolution, index) => (
                     <div key={evolution.species.name} className="flex items-center gap-4">
                         <PokemonCard pokemon={evolution} />

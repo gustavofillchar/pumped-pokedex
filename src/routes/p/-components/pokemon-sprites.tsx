@@ -21,10 +21,10 @@ export default function PokemonSprites({ sprites, name }: PokemonSpritesProps) {
     return (
         <div className="space-y-3">
             <h3 className="text-lg font-semibold">Sprites</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex flex-wrap gap-4">
                 {spriteList.map(({ src, label }) => (
                     <div key={label} className="text-center">
-                        <div className="w-24 h-24 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div className="w-24 h-24 border border-gray-200 rounded flex items-center justify-center">
                             <img
                                 src={src}
                                 alt={`${name} ${label.toLowerCase()}`}

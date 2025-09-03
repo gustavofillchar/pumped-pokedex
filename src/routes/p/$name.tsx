@@ -135,15 +135,17 @@ function RouteComponent() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="mb-8">
                 <PokemonSprites sprites={pokemonData.sprites} name={pokemonData.name} />
-
-                {evolutionChain ? (
-                    <EvolutionChain chain={(evolutionChain as { chain: EvolutionStage }).chain} />
-                ) : null}
             </div>
 
-            <div className="mt-8">
+            {evolutionChain ? (
+                <div className="mb-8">
+                    <EvolutionChain chain={(evolutionChain as { chain: EvolutionStage }).chain} />
+                </div>
+            ) : null}
+
+            <div>
                 <PokemonMoves moves={pokemonData.moves} />
             </div>
         </div>
