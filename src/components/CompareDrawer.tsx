@@ -58,6 +58,14 @@ export default function CompareDrawer() {
 
     const slotsToShow = Array.from({ length: 3 }, (_, index) => compareList[index] || null)
 
+
+    const pokemonTotals = compareList.map(pokemon => ({
+        id: pokemon.id,
+        total: pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0)
+    }))
+    const maxTotal = Math.max(...pokemonTotals.map(p => p.total))
+    const highestTotalPokemonId = pokemonTotals.find(p => p.total === maxTotal)?.id
+
     return (
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerContent className="max-h-[90vh] flex flex-col">
@@ -78,8 +86,9 @@ export default function CompareDrawer() {
 
                     <div className="flex-1 overflow-auto px-4 pb-4">
                         <div className="grid gap-2 md:gap-6 grid-cols-3">
-                            {slotsToShow.map((pokemon, index) =>
-                                pokemon ? (
+                            {slotsToShow.map((pokemon, index) => {
+                                const isHighestTotal = pokemon && pokemon.id === highestTotalPokemonId && compareList.length > 1
+                                return pokemon ? (
                                     <div key={pokemon.id} className="bg-white border border-gray-200 rounded-lg p-2 md:p-4">
                                         <div className="flex items-center justify-between mb-2 md:mb-3">
                                             <h3 className="font-semibold capitalize text-sm md:text-base truncate">{pokemon.name}</h3>
@@ -137,7 +146,7 @@ export default function CompareDrawer() {
                                         <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-gray-100">
                                             <div className="text-center">
                                                 <span className="text-xs md:text-sm text-gray-500">Total</span>
-                                                <div className="font-bold text-sm md:text-lg">
+                                                <div className={`font-bold text-sm md:text-lg ${isHighestTotal ? 'text-yellow-500' : ''}`}>
                                                     {pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0)}
                                                 </div>
                                             </div>
@@ -147,7 +156,7 @@ export default function CompareDrawer() {
                                     <div key={`empty-${index}`} className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-2 md:p-4 min-h-[200px] md:min-h-[300px]">
                                     </div>
                                 )
-                            )}
+                            })}
                         </div>
                     </div>
 
