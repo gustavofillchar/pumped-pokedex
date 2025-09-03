@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { pokemonService } from '@/services/api'
 
-export const usePokemonDetail = (name: string) => {
+export const usePokemonDetail = (name: string, options?: Partial<UseQueryOptions>) => {
     return useQuery({
         queryKey: ['pokemon-detail', name],
         queryFn: () => pokemonService.getPokemonDetails(name),
         enabled: !!name,
+        ...options,
     })
 }
 

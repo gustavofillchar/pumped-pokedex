@@ -1,8 +1,10 @@
 import { Link } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
 import { useCompare } from '@/contexts/CompareContext'
-import { usePokemonDetail } from '@/hooks/usePokemonDetail'
 import { Button } from '@/components/ui/button'
+import { useTransition } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { pokemonService } from '@/services/api'
 
 export default function PokemonList({ data: pokemons, loading }: { data: { results: { name: string; url: string }[] }, loading: boolean | undefined }) {
 
@@ -10,11 +12,11 @@ export default function PokemonList({ data: pokemons, loading }: { data: { resul
         const pokemonId = url.split('/').filter(Boolean).pop()
         const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
         const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare()
-
-        const { data: pokemonDetail } = usePokemonDetail(name)
+        const [isPending, startTransition] = useTransition()
+        const queryClient = useQueryClient()
 
         const inCompare = isInCompare(parseInt(pokemonId || '0'))
-        const canAdd = compareList.length < 3 && pokemonDetail
+        const canAdd = compareList.length < 3
 
         const handleToggleCompare = (e: React.MouseEvent) => {
             e.preventDefault()
@@ -22,25 +24,35 @@ export default function PokemonList({ data: pokemons, loading }: { data: { resul
 
             if (inCompare) {
                 removeFromCompare(parseInt(pokemonId || '0'))
-            } else {
-                if (!pokemonDetail || compareList.length >= 3) return
-
-                const pokemonData = pokemonDetail as {
-                    id: number
-                    name: string
-                    sprites: { front_default: string }
-                    stats: Array<{ base_stat: number; stat: { name: string } }>
-                    types: Array<{ type: { name: string } }>
-                }
-
-                addToCompare({
-                    id: pokemonData.id,
-                    name: pokemonData.name,
-                    sprites: { front_default: pokemonData.sprites.front_default },
-                    stats: pokemonData.stats,
-                    types: pokemonData.types
-                })
+                return
             }
+
+            if (!canAdd) return
+
+            startTransition(async () => {
+                try {
+                    const pokemonDetail = await queryClient.fetchQuery({
+                        queryKey: ['pokemon-detail', name],
+                        queryFn: () => pokemonService.getPokemonDetails(name),
+                    }) as {
+                        id: number
+                        name: string
+                        sprites: { front_default: string }
+                        stats: Array<{ base_stat: number; stat: { name: string } }>
+                        types: Array<{ type: { name: string } }>
+                    }
+
+                    addToCompare({
+                        id: pokemonDetail.id,
+                        name: pokemonDetail.name,
+                        sprites: { front_default: pokemonDetail.sprites.front_default },
+                        stats: pokemonDetail.stats,
+                        types: pokemonDetail.types
+                    })
+                } catch (error) {
+                    console.error('Failed to load pokemon details:', error)
+                }
+            })
         }
 
         return (
@@ -77,10 +89,16 @@ export default function PokemonList({ data: pokemons, loading }: { data: { resul
                             : 'opacity-0 group-hover:opacity-100' + (!canAdd ? ' opacity-50 cursor-not-allowed' : '')
                         }`}
                     onClick={handleToggleCompare}
-                    disabled={!inCompare && !canAdd}
+                    disabled={(!inCompare && !canAdd) || isPending}
                     aria-label={inCompare ? `Remove ${name} from compare` : `Add ${name} to compare`}
                 >
-                    {inCompare ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                    {isPending ? (
+                        <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    ) : inCompare ? (
+                        <X className="w-3 h-3" />
+                    ) : (
+                        <Plus className="w-3 h-3" />
+                    )}
                 </Button>
             </div>
         )
