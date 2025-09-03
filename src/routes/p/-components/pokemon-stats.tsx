@@ -25,7 +25,6 @@ export default function PokemonStats({ stats }: PokemonStatsProps) {
 
     return (
         <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Base Stats</h3>
             <div className="space-y-2">
                 {stats.map(({ stat, base_stat }) => (
                     <div key={stat.name} className="flex items-center gap-4">

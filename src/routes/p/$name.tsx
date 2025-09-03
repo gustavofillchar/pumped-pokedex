@@ -101,7 +101,7 @@ function RouteComponent() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <div className="space-y-6">
                     <div className="text-center">
-                        <div className="w-48 h-48 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                        <div className="w-48 h-48 mx-auto flex items-center justify-center mb-4">
                             <img
                                 src={pokemonData.sprites.front_default}
                                 alt={pokemonData.name}
