@@ -18,7 +18,7 @@ export default function PokemonPagination({ currentPage, totalPages, onPageChang
     const canGoNext = currentPage < totalPages
 
     return (
-        <div className='border-t border-gray-100 pt-6 mt-6 flex mx-auto w-full select-none'>
+        <div className='mt-6 flex mx-auto w-full select-none'>
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
