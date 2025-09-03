@@ -9,7 +9,7 @@ type SearchParams = {
 
 export const usePokemonSearchParams = () => {
     const navigate = useNavigate()
-    const { q, page } = useSearch({ from: '/home/' }) as SearchParams
+    const { q, page } = useSearch({ from: '/' }) as SearchParams
     const [searchInput, setSearchInput] = useState(q || '')
     const debouncedSearch = useDebounce(searchInput, 300)
     const lastNavigatedRef = useRef<{ q?: string; page?: number }>({ q, page })
@@ -28,7 +28,7 @@ export const usePokemonSearchParams = () => {
         if (hasActualChanges) {
             lastNavigatedRef.current = { q: normalizedParams.q, page: normalizedParams.page || 1 }
             navigate({
-                to: '/home',
+                to: '/',
                 search: normalizedParams,
                 replace: true,
             })

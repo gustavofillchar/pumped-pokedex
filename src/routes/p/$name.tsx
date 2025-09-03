@@ -83,7 +83,7 @@ function RouteComponent() {
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink asChild>
-                                <Link to="/home">Pokédex</Link>
+                                <Link to="/">Pokédex</Link>
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
