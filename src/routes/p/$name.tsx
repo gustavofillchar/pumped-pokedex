@@ -5,6 +5,7 @@ import PokemonTypes from './-components/pokemon-types'
 import PokemonStats from './-components/pokemon-stats'
 import PokemonSprites from './-components/pokemon-sprites'
 import EvolutionChain from './-components/evolution-chain'
+import PokemonMoves from './-components/pokemon-moves'
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -64,6 +65,14 @@ function RouteComponent() {
         types: Array<{ type: { name: string } }>
         abilities: Array<{ ability: { name: string }; is_hidden: boolean }>
         stats: Array<{ base_stat: number; stat: { name: string } }>
+        moves: Array<{
+            move: { name: string; url: string }
+            version_group_details: Array<{
+                level_learned_at: number
+                move_learn_method: { name: string }
+                version_group: { name: string }
+            }>
+        }>
     }
 
     return (
@@ -132,6 +141,10 @@ function RouteComponent() {
                 {evolutionChain ? (
                     <EvolutionChain chain={(evolutionChain as { chain: EvolutionStage }).chain} />
                 ) : null}
+            </div>
+
+            <div className="mt-8">
+                <PokemonMoves moves={pokemonData.moves} />
             </div>
         </div>
     )

@@ -24,3 +24,11 @@ export const useEvolutionChain = (id?: number) => {
         enabled: !!id,
     })
 }
+
+export const useMoveDetail = (name: string) => {
+    return useQuery({
+        queryKey: ['move-detail', name],
+        queryFn: () => pokemonService.getMoveDetails(name),
+        enabled: !!name,
+    })
+}
