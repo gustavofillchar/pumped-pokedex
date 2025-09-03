@@ -11,13 +11,13 @@ export const Route = createFileRoute('/home/')({
 
 const usePokemons = (page: number, limit = 20) => {
     const offset = (page - 1) * limit
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading: loading, error } = useQuery({
         queryKey: ['pokemons', page, limit],
         queryFn: () => pokemonService.getPokemons(limit, offset),
     })
     return {
         data: data as { count: number; results: unknown[] },
-        isLoading,
+        loading,
         error
     }
 }
@@ -25,17 +25,17 @@ const usePokemons = (page: number, limit = 20) => {
 function RouteComponent() {
     const [currentPage, setCurrentPage] = useState(1)
     const limit = 20
-    const { data, isLoading } = usePokemons(currentPage, limit)
+    const { data, loading } = usePokemons(currentPage, limit)
 
     const totalPages = data ? Math.ceil(data.count / limit) : 0
 
-    if (isLoading) {
+    if (loading) {
         return <div>Loading...</div>
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <PokemonList data={data as { results: { name: string }[] }} />
+        <div className="container mx-auto">
+            <PokemonList loading={loading} data={data as { results: { name: string }[] }} />
 
             <PokemonPagination
                 currentPage={currentPage}
